@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/index.css">
+  <title>Company Annual Meeting</title>
+</head>
+
+<body>
+  <div class="annualMetting">
+    <h1>2019新年开心获大奖</h1>
+    <div class="thePrizeArea">
+      <!--  style="display: none" 抽奖区域 -->
+      <div id="container">
+        <div class="winnerImg" id="winnerImgForImg">
+          <img id="winnerImg" src="./ui/init.jpg" alt="">
+        </div>
+      </div>
+
+      <!-- 显示获奖名单  style="display: none" -->
+      <div class="showWinner" id="showWinner" style="display: none">
+        <ul class="clearfix">
+          <li class="clearfix">
+            <div id="first" class="prizeType" style="display: none">一等奖</div>
+
+            <div class="thePrizeImg" style="display: none">
+              <img id="theFirstPrize" src="" alt="">
+            </div>
+          </li>
+
+          <li>
+            <div id="second" class="prizeType" style="display: none">二等奖</div>
+
+            <div class="thePrizeImg" style="display: none">
+              <img id="theSecondPrize" src="" alt="">
+            </div>
+            <div class="thePrizeImg" style="display: none">
+              <img id="theSecondPrize2" src="" alt="">
+            </div>
+          </li>
+
+          <li>
+            <div id="third" class="prizeType" style="display: none">三等奖</div>
+
+            <div class="thePrizeImg" style="display: none">
+              <img id="theThirdPrize" src="" alt="">
+            </div>
+            <div class="thePrizeImg" style="display: none">
+              <img id="theThirdPrize2" src="" alt="">
+            </div>
+            <div class="thePrizeImg" style="display: none">
+              <img id="theThirdPrize3" src="" alt="">
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- style="display: none" -->
+      <div id="btnStart" onclick="startRoll()" class="btnStart" onmousedown="noBgc()" onmouseup="showBgc()">
+        <img src="./ui/start.jpg" alt="">
+      </div>
+      <div style="display: none" id="btnStart1" onclick="startRoll()" class="btnStart2" onmousedown="noBgc()" onmouseup="showBgc()">
+        <img src="./ui/start.jpg" alt="">
+      </div>
+    </div>
+    <img id="left" src="./ui/left.png" alt="">
+    <img id="happy" src="./ui/happy.png" alt="">
+  </div>
+  <audio id="player" src="./mp3/sound.mp3"></audio>
+
+
+  <script>
+    names = ["LDH", "WYZ", "SQ", "PYY", "DLRB", "DC",]
+    winnerArr = []
+    let intervalID = 0
+    let intervalCount = 0 // 抽奖图片滚动的次数
+    let index = -1
+    let count = 0
+    let container = document.getElementById("container")
+    let someone = document.getElementById("someone")
+    let winnerImg = document.getElementById("winnerImg")
+    let showWinner = document.getElementById("showWinner")
+    let btnStart = document.getElementById("btnStart")
+    let btnStart1 = document.getElementById("btnStart1")
+    let winnerImgForImg = document.getElementById('winnerImgForImg');
+    let thePrizeImgArr = document.querySelectorAll('.thePrizeImg');
+    let player = document.getElementById("player")
+
+    let first = document.getElementById('first');
+    let second = document.getElementById('second');
+    let third = document.getElementById('third');
+
+    let theFirstPrize = document.getElementById("theFirstPrize")
+    let theSecondPrize = document.getElementById("theSecondPrize")
+    let theSecondPrize2 = document.getElementById("theSecondPrize2")
+    let theThirdPrize = document.getElementById("theThirdPrize")
+    let theThirdPrize2 = document.getElementById("theThirdPrize2")
+    let theThirdPrize3 = document.getElementById("theThirdPrize3")
+
+    let leftImg = document.getElementById("left")
+    let rightImg = document.getElementById("happy")
+
+    function startRoll() {
+      if (count > 5) return
+      if (intervalID === 0) {
+        intervalCount = 0 // 每次图片滚动初始化
+        // 音频能播放
+        player.play()
+        // 显示滚动抽奖页面
+        container.style.display = ""
+        // btnStart.style.display = ""
+        showWinner.style.display = "none"
+        btnStart1.style.display = "none"
+
+        count++
+        names = shuffle(names) // 乱序
+        console.log("参赛名单")
+        console.log(names)
+        intervalID = setInterval(() => {
+          // 逐渐放缓滚动速度
+          intervalCount++
+          if (intervalCount >= 5 * 10 && intervalCount < 8 * 10) {
+            if (intervalCount % 2 !== 0) return
+          } else if (intervalCount >= 8 * 10 && intervalCount < 11 * 10) {
+            if (intervalCount % 4 !== 0) return
+          } else if (intervalCount >= 11 * 10 && intervalCount < 14 * 10) {
+            if (intervalCount % 6 !== 0) return
+          } else if (intervalCount >= 14 * 10 && intervalCount < 17 * 10) {
+            if (intervalCount % 8 !== 0) return
+          } else if (intervalCount >= 17 * 10 && intervalCount < 20 * 10) {
+            if (intervalCount % 10 !== 0) return
+          }
+
+          // index = Math.round(Math.random() * 10000) % names.length
+          index = Math.floor(Math.random() * names.length) // 随机轮播图片
+          winnerImg.src = `photo/${names[index]}.jpg` // 显示获奖者的图片
+        }, 100)
+        setTimeout(stopRoll, 20000);
+      }
+    }
+
+    function stopRoll() {
+      if (intervalID === 0) return
+      clearInterval(intervalID)
+      winnerArr.push(names[index]) // 存储获奖者的名单
+      names.splice(index, 1)
+
+      console.log("获奖名单");
+      console.log(winnerArr);
+      setTimeout(() => {
+        // 所有获奖者一一呈现(图片依次向右移动一格)
+        // winnerArr.map((item, index) => {
+        //   thePrizeImgArr[(thePrizeImgArr.length - 1) - index].style.display = ""
+        //   return true
+        // })
+
+        // switch (winnerArr.length) {
+        //   case 6:
+        //     first.style.display = ""
+        //     theFirstPrize.src = `photo/${winnerArr[5]}.jpg`
+        //     break;
+        //   case 5:
+        //     theSecondPrize.src = `photo/${winnerArr[4]}.jpg`
+        //     break;
+        //   case 4:
+        //     second.style.display = ""
+        //     theSecondPrize2.src = `photo/${winnerArr[3]}.jpg`
+        //     break;
+        //   case 3:
+        //     theThirdPrize.src = `photo/${winnerArr[2]}.jpg`
+        //     break;
+        //   case 2:
+        //     theThirdPrize2.src = `photo/${winnerArr[1]}.jpg`
+        //     break;
+        //   case 1:
+        //     third.style.display = ""
+        //     theThirdPrize3.src = `photo/${winnerArr[0]}.jpg`
+        //     break;
+        //   default:
+        //     break;
+        // }
+
+        // (图片依次向后排列)
+        switch (winnerArr.length) {
+          case 6:
+            first.style.display = ""
+            thePrizeImgArr[0].style.display = ""
+            theFirstPrize.src = `photo/${winnerArr[5]}.jpg`
+            break;
+          case 5:
+            thePrizeImgArr[2].style.display = ""
+            theSecondPrize2.src = `photo/${winnerArr[4]}.jpg`
+            break;
+          case 4:
+            second.style.display = ""
+            thePrizeImgArr[1].style.display = ""
+            theSecondPrize.src = `photo/${winnerArr[3]}.jpg`
+            break;
+          case 3:
+            thePrizeImgArr[5].style.display = ""
+            theThirdPrize3.src = `photo/${winnerArr[2]}.jpg`
+            break;
+          case 2:
+            thePrizeImgArr[4].style.display = ""
+            theThirdPrize2.src = `photo/${winnerArr[1]}.jpg`
+            break;
+          case 1:
+            third.style.display = ""
+            thePrizeImgArr[3].style.display = ""
+            theThirdPrize.src = `photo/${winnerArr[0]}.jpg`
+            break;
+          default:
+            break;
+        }
+
+        // 隐藏抽奖区域与现实获奖区域
+        container.style.display = "none"
+        btnStart.style.display = "none"
+        showWinner.style.display = ""
+        btnStart1.style.display = ""
+        winnerImgForImg.className = "winnerImg winnerImg2"
+        intervalID = 0 // 此时重置定时器id, 防止重复点击获奖按钮
+      }, 3000) // 3s后显示所有获奖者
+      // }
+    }
+
+    // 乱序
+    function shuffle(names) {
+      let newNames = []
+      while (names.length > 1) {
+        // let index = Math.round(Math.random() * 100000) % names.length
+        let index = Math.floor(Math.random() * names.length) // 将参赛者乱序
+        newNames = newNames.concat(names.splice(index, 1))
+      }
+      newNames.push(names[0])
+      return newNames
+    }
+
+    function noBgc() {
+      btnStart.style.boxShadow = "0 0 0 #000"
+      btnStart1.style.boxShadow = "0 0 0 #000"
+    }
+    function showBgc() {
+      btnStart.style.boxShadow = "5px 5px 18px #333"
+      btnStart1.style.boxShadow = "5px 5px 18px #333"
+    }
+
+    let direction = 0 // 0 向右 1 向左
+    setInterval(() => {
+      leftSwing()
+    }, 1000)
+    function leftSwing() {
+      if (direction === 0) {
+        direction = 1
+        leftImg.classList.remove("zhuan_left")
+        leftImg.classList.add("zhuan_right")
+      } else {
+        direction = 0
+        leftImg.classList.remove("zhuan_right")
+        leftImg.classList.add("zhuan_left")
+      }
+    }
+
+    let size = 1
+    setInterval(() => {
+      RightTransform()
+    }, 1000)
+    function RightTransform() {
+      if (size === 1) {
+        size = 0
+        rightImg.classList.remove("toSmall")
+        rightImg.classList.add("toBig")
+      } else {
+        size = 1
+        rightImg.classList.remove("toBig")
+        rightImg.classList.add("toSmall")
+      }
+    }
+
+  </script>
+
+</body>
+
+</html>
